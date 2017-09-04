@@ -1,0 +1,35 @@
+The number of workers should be equal to number of CPU cores allocated to the VPS, or if you want to leave some CPU cores exclusively for the PostgreSQL database, cron jobs or other applications installed on the same VPS where the Odoo instance is installed and running, set the number of workers to a lower value than CPU cores available on the VPS to avoid resources exhaustion.
+The limit-memory-soft and limit-memory-hard are self-explanatory, and you should leave them to the default value or modify them depending on the RAM available on the actual VPS.
+For example, if you have a VPS with 8 CPU cores and 16 GB of RAM, the number of workers should be 17 (CPU cores * 2 + 1), total limit-memory-soft value will be 640 x 17 = 10880 MB , and total limit-memory-hard 768MB x 17 = 13056 MB, so Odoo will use maximum 12.75 GB of RAM.
+
+For example, on a VPS with 16 GB of RAM and 8 CPU cores, edit the Odoo configuration file (e.g. /etc/odoo-server.conf), and add the following lines to it:
+
+/etc/odoo-server.conf
+
+workers = 17
+
+limit_memory_hard = 13690208256
+
+limit_memory_soft = 11408506880
+
+limit_request = 8192
+
+limit_time_cpu = 60
+
+limit_time_real = 120
+
+max_cron_threads = 2
+
+Do not forget to restart Odoo for the changes to take effect.
+
+Properly configure and optimize PostgreSQL
+As for the PostgreSQL optimization, it is a good idea to update to the latest PostgreSQL version whenever a new version comes out. There are two settings in PostgreSQL configuration file (pg_hba.conf) which should be modified: shared_buffers and effective_cache_size. Set shared_buffers to 20% of the available memory, and effective_cache_size to 50% of the available memory.
+
+For example, if Odoo is installed on an SSD VPS with 16 GB of RAM, use the following settings to pg_hba.conf file:
+
+vi /var/lib/postgresql/data/pg_hba.conf
+shared_buffers = 3072MB
+effective_cache_size = 8192MB
+Restart the PostgreSQL service for the changes to take effect.
+
+Also, do not forget to run ‘VACUUM‘ manually periodically. ‘Vacuuming’ cleans up stale or temporary data, but please keep in mind that it is heavy on both CPU and disk usage.
