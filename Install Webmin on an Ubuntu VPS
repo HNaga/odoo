@@ -1,0 +1,27 @@
+First, log in to your Linux VPS via SSH, open the sources.list file
+
+nano /etc/apt/sources.list
+and add the following lines:
+
+deb http://download.webmin.com/download/repository sarge contrib
+deb http://webmin.mirror.somersettechsolutions.co.uk/repository sarge contrib
+Save the file and close it. After you are done with this step, you need to add the Webmin GPG key. This step is required to make sure that the Webmin repository you have previously added is trusted. Navigate to your /root directory:
+
+cd /root
+Download the Webmin GPG key using wget by running the following command:
+
+wget http://www.webmin.com/jcameron-key.asc
+Finally, add the Webmin GPG key to apt using the following command:
+
+apt-key add jcameron-key.asc
+Once you add the GPG key you need to update the apt package lists. Run the following command:
+
+apt-get update
+Now you are ready to install Webmin on your Ubuntu VPS. To do that you should run the command:
+
+apt-get install webmin
+The installation will take some time. Depending on your system, it should take no longer than 15 minutes. Once the installation completes, you can start using Webmin.
+
+The Webmin default port is 10000. In order to access the web interface you will need to open your favorite web browser and type your server IP address followed by the port number.
+
+https://IP-ADDRESS:10000
