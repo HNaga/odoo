@@ -33,9 +33,9 @@ WKHTMLTOX_X32=http://download.gna.org/wkhtmltopdf/0.12/0.12.1/wkhtmltox-0.12.1_l
 #Set the default Odoo port (you still have to use -c /etc/odoo-server.conf for example to use this.)
 OE_PORT="8069"
  
-#Choose the Odoo version which you want to install. For example: 10.0,9.0, 8.0, 7.0 or saas-6. When using 'trunk' the master version will be installed.
-#IMPORTANT! This script contains extra libraries that are specifically needed for Odoo 10.0
-OE_VERSION="10.0"
+#Choose the Odoo version which you want to install. For example: 9.0, 8.0, 7.0 or saas-6. When using 'trunk' the master version will be installed.
+#IMPORTANT! This script contains extra libraries that are specifically needed for Odoo 9.0
+OE_VERSION="9.0"
  
 #set the superadmin password
 OE_SUPERADMIN="admin"
