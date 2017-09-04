@@ -1,8 +1,8 @@
 #!/bin/bash
 ################################################################################
 # Script for installing Odoo V10 on Ubuntu 16.04 LTS
-# Author: El Fadili Yassine
-# Company: CITEL Technology
+# Author: hisham abul naga
+# Company: myth trade
 #-------------------------------------------------------------------------------
 # This script will install Odoo on clean Ubuntu 16.04 server. It can install multiple Odoo instances
 # in one Ubuntu because of the different xmlrpc_ports
