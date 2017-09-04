@@ -8,7 +8,7 @@
 # in one Ubuntu because of the different xmlrpc_ports
 #-------------------------------------------------------------------------------
 # USAGE:
-# download the script from https://gist.github.com/ElFadiliY/5f9a025260ea665990a0
+# download the script from https://github.com/HNaga/odoo/edit/master/odoo-install.sh
 # > sudo chmod +x odoo-install.sh
 # > ./odoo-install.sh
 ################################################################################
