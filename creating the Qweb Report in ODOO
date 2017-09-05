@@ -1,0 +1,25 @@
+In General Directory file structure for creating the Qweb Report in ODOO
+
+report directory file contain
+
+__ init __.py file
+
+which is use as the manifest file for any python module its kind of entry point of the python module. (add the entry point of the your_report_parser_class_file.py file)
+
+your_report_parser_class_file.py file
+
+your report parser class file used to contain the report related function and variables which you want to call in future in your report (In Qweb View)
+
+view directory file contain
+
+report_your_report_name.xml file
+
+Which is used to add the report view file it mean that the file will be displaying the for the Qweb View
+
+(Generally its uses the bootstrap class andour custom css and Qweb template engine tags for designing the Qweb report and also this file has the added in __ openerp__.py file )
+
+report_menu_file.xml file
+
+Add the menu xml file for add the menu to print the Qweb Report which is totally near and have the same folder as the __ openerp__.py file
+
+(this file also has the add the entry in __ openerp__.py file )
