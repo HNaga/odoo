@@ -1,0 +1,192 @@
+Adding new reports to OpenERP
+
+Creating new modules for Open ERP is pretty simple. Here is how to package up some new reports into a module.
+
+In this example I’ve created another report to use with sales orders. This is based on the sales order report so in actual fact I use some of the code and xml from that original report to build it up, then tweak them to produce the collection docket I want. I’m not actually going to reproduce the report here, since that’s a trivial thing to customise. The interesting thing is really how the module is packaged together and how to spot mistakes in the packaging.
+
+The files/folders in the zip
+
+1
+2
+3
+4
+5
+6
+module/__openerp__.py                # this contains the module info
+module/report/collection_docket.rml  # the report
+module/report/sale_order.py          # sets up the report parser
+module/report/__init__.py            # just loads the code
+module/reports.xml                   # registers the report
+module/__init__.py                   # loads the code
+__openerp__.py
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+{
+   'name': 'Extra Sales Reports',
+   'version': '0.01',
+   'category': 'Extra reports for sales',
+   'description': """
+   The extra sales reports needed for our project,
+ 
+   * Reports
+     - Collection Docket
+ 
+   """,
+   'author': 'OpusVL',
+   'website': 'http://www.opusvl.com',
+   'depends': ['stock', 'procurement', 'board', 'sale'],
+   'init_xml': [],
+   'update_xml': [
+       'reports.xml',
+   ],
+   'demo_xml': [],
+   'test': [],
+   'installable': True,
+   'active': False,
+}
+__init.py__
+
+1
+import report
+reports.xml
+
+1
+2
+3
+4
+5
+6
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <report auto="False" id="collection_docket" model="sale.order" name="sale.collection_docket" rml="module/report/collection_docket.rml" string="Collection Docket" />
+    </data>
+</openerp>
+report/__init__.py
+
+1
+import sale_order
+report/sale_order.py
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+from report import report_sxw
+import time
+ 
+ 
+# this bit is basically a copy of the stuff
+# in the regular sale order module.
+# I can't just import that code because it causes
+# the sale.order report to get registered again
+# causing it to complain.
+# otherwise I’d do this - from addons.sale.report import order 
+class order(report_sxw.rml_parse):
+    def __init__(self, cr, uid, name, context=None):
+        super(order, self).__init__(cr, uid, name, context=context)
+        self.localcontext.update({
+            'time': time,
+        })
+ 
+ 
+report_sxw.report_sxw('report.sale.collection_docket', 'sale.order', 'addons/module/report/collection_docket.rml', parser=order, header="external")
+report/collection_docket.rml
+
+1
+2
+3
+<?xml version="1.0"?>
+<document filename="Sale Order.pdf">
+... this is a copy of the addons/sale/report/sale_order.rml customised as necessary.
+The module is then zipped up for distribution in a regular .zip file. This can either be imported directly into OpenERP or it can be unzipped manually into the addons directory.
+
+Installation of the module via the OpenERP client
+
+Go to Administration->Modules,
+Select Import module and select the zip [1].
+Select the module and mark it for install.
+Now restart OpenERP server.
+Now go back to the client and schedule the install of the module.
+If you install your module this way you will actually find that the module is left in it’s zip file and the OpenERP server simply reads the files from the zip as if they were an extension of the addons directory.
+
+Manual installation
+
+Find the addons directory
+Unzip the module into it.
+Restart the openerp server
+Go to Administration -> Modules
+Select ‘Update Module List’.
+Find the module and schedule it for install.
+Use
+
+The report can now be used programmatically using the standard report method and referencing it as sale.collection_docket. Alternatively you’ll find that a button has appeared on the sales order screen in the OpenERP client that allows you to print the collection docket alongside the button for printing the regular sales order report.
+
+Trouble shooting
+
+ZipImportError: bad local file header in /usr/share/pyshared/openerp-server/addons/myextra_reports.
+zip
+
+This normally indicates it is time to restart the server. If you have just imported the zip file of the module and tried to install it straight away you will often get this error.
+
+ERROR:web-services:[01]: Exception: Report /usr/share/pyshared/openerp-server/addons/myextra_report/report/collection_docket.rml doesn’t exist or deleted :
+
+This is generally caused by a typo in the parser python file where the report is registered with the report_sxw.report_sxw call.
+
+ERROR:service:This service does not exist: ‘report.sale.collection_docket’
+ERROR:web-services:[07]: KeyError: ‘report.sale.collection_docket’
+
+The report hasn’t been registered. Has your module been installed and loaded against the current database? Remember that installing the module into the OpenERP server and installing it against your current database are two seperate steps.
+
+ERROR:web-services:[01]: Exception: Start tag expected, ‘<' not found, line 1, column 1
+
+This can be caused by a bad filename registered using the xml file. The path to the file should be in relation to the addons path. In other words, if the full path is /usr/share/pyshared/openerp-server/addons/module/report/docket.rml, the relative filename you need is module/report/docket.rml.
+http://www.openerp.com/forum/topic26308.html
+
+The alternative cause of this problem is that there is a unicode BOM indicator at the start of the file. One of the support entries appears to indicate that that will cause the parser to dislike the document.
+
+https://bugs.launchpad.net/openobject-server/+bug/694409
+
+[1] If you get a permissions error that’s normally because the addons
+directory isn’t writeable by the user that openerp is running as.
+
+Further reading
+
+The OpenERP documentation regarding reports.
