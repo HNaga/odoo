@@ -34,7 +34,7 @@ OE_SUPERADMIN="admin"
 OE_CONFIG="${OE_USER}-server"
 
 ##
-###  WKHTMLTOPDF download links
+###   WKHTMLTOPDF download links
 ## === Ubuntu Trusty x64 & x32 === (for other distributions please replace these two links,
 ## in order to have correct version of wkhtmltox installed, for a danger note refer to 
 ## https://www.odoo.com/documentation/8.0/setup/install.html#deb ):
